@@ -18,7 +18,7 @@ def load_user_agents():
     with open('useragents.txt', 'r') as f:
         return [line.strip() for line in f if line.strip()]
 
-# Proxy Scraper (NO validation)
+# Proxy Scraper 
 def scrape_proxies():
     proxy_sources = [
         "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=1000&country=all&ssl=all&anonymity=all",
