@@ -7,3 +7,4 @@ httpx>=0.24.1
 uvloop>=0.17.0   
 aioquic>=0.9.20
 tls-client>=0.1.13
+rich
