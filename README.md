@@ -1,6 +1,6 @@
 # 🦊 KITSUNE v1.0 - Firepower Edition
 
-**KITSUNE** is a high-performance, modular Layer 4 and Layer 7 **DDoS testing tool** developed for educational and research purposes. Designed with speed, stealth, and flexibility in mind, KITSUNE empowers cybersecurity researchers, red teamers, and ethical hackers to simulate and study the impact of various denial-of-service strategies in controlled environments.
+**KITSUNE** is a high-performance, modular Layer 4 and Layer 7 **DDoS testing tool** developed for educational and research purposes. 
 
 ---
 
