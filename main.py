@@ -32,6 +32,10 @@ def scrape_proxies():
         "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt"
         "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt"
         "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt"
+        "https://www.proxy-list.download/api/v1/get?type=https"
+        "https://www.proxy-list.download/api/v1/get?type=http"
+        "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all"
+        "http://spys.me/proxy.txt"
     ]
     proxies = set()
     print(f"{Fore.YELLOW}[!] Scraping fresh proxies...")
