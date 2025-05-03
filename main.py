@@ -29,13 +29,16 @@ def scrape_proxies():
     proxy_sources = [
         "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=1000&country=all&ssl=all&anonymity=all",
         "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
-        "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt"
-        "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt"
-        "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt"
-        "https://www.proxy-list.download/api/v1/get?type=https"
-        "https://www.proxy-list.download/api/v1/get?type=http"
-        "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all"
-        "http://spys.me/proxy.txt"
+        "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks5.txt",
+        "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
+        "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-http.txt",
+        "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/http.txt",
+        "https://www.proxy-list.download/api/v1/get?type=https",
+        "https://www.proxy-list.download/api/v1/get?type=http",
+        "https://api.proxyscrape.com/v2/?request=displayproxies&protocol=http&timeout=10000&country=all&ssl=all&anonymity=all",
+        "http://spys.me/proxy.txt",
+        "https://www.proxyscan.io/api/proxy?limit=100&type=http",
+        "https://openproxy.space/list/http",
     ]
     proxies = set()
     print(f"{Fore.YELLOW}[!] Scraping fresh proxies...")
