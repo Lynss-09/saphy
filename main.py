@@ -26,7 +26,7 @@ def load_user_agents():
 
 # Proxy Scraper 
 def scrape_proxies():
-proxy_sources = [
+    proxy_sources = [
     "https://www.proxy-list.download/api/v1/get?type=socks4",
     "https://www.proxy-list.download/api/v1/get?type=socks5",
     "https://raw.githubusercontent.com/mertguvencli/http-proxy-list/main/proxies.txt",
@@ -56,7 +56,7 @@ proxy_sources = [
     "https://github.com/oxylabs/free-proxy-list/raw/main/proxy.txt",
     "https://spys.me/proxy.txt",
     "https://proxyelite.info/files/proxy/http.txt"
-]
+    ]
     proxies = set()
     print(f"{Fore.YELLOW}[!] Scraping fresh proxies...")
     for url in proxy_sources:
