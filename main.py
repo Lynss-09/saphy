@@ -26,7 +26,7 @@ def load_user_agents():
 
 # Proxy Scraper 
 def scrape_proxies():
-    proxy_sources = [
+proxy_sources = [
     "https://www.proxy-list.download/api/v1/get?type=socks4",
     "https://www.proxy-list.download/api/v1/get?type=socks5",
     "https://raw.githubusercontent.com/mertguvencli/http-proxy-list/main/proxies.txt",
@@ -46,8 +46,17 @@ def scrape_proxies():
     "https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/all.txt",
     "https://raw.githubusercontent.com/yuceltoluyag/Free-Proxy-List/main/proxies/proxy-list.txt",
     "https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS5_RAW.txt",
-    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt"
-    ]
+    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
+    "https://api.proxyscrape.com/v2/?request=getproxies&protocol=http&timeout=10000&country=all",
+    "https://github.com/TheSpeedX/PROXY-List/raw/master/http.txt",
+    "https://geonode.com/free-proxy-list",
+    "https://raw.githubusercontent.com/vakhov/fresh-proxy-list/master/proxies.txt",
+    "https://github.com/jetkai/proxy-list/raw/main/online-proxies/txt/proxies-http.txt",
+    "https://free-proxy-list.net/",
+    "https://github.com/oxylabs/free-proxy-list/raw/main/proxy.txt",
+    "https://spys.me/proxy.txt",
+    "https://proxyelite.info/files/proxy/http.txt"
+]
     proxies = set()
     print(f"{Fore.YELLOW}[!] Scraping fresh proxies...")
     for url in proxy_sources:
