@@ -1,5 +1,5 @@
 # Kitsune v1.0 - Firepower Edition
-# Developed By: ALTAIR
+# Developed By: LYNSS
 import threading
 import asyncio
 import aiohttp
@@ -275,7 +275,7 @@ def stats_dashboard(url, duration):
         prev_total = total
 
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"{Fore.MAGENTA}=== Kitsune v1.0 - Attack Dashboard ==={Style.RESET_ALL}")
+        print(f"{Fore.MAGENTA}=== LadyFox v1.0 - Attack Dashboard ==={Style.RESET_ALL}")
         print(f"{Fore.LIGHTCYAN_EX}Target        : {url}")
         print(f"{Fore.LIGHTCYAN_EX}Time Left     : {int(end_time - time.time())}s")
         print(f"{Fore.LIGHTCYAN_EX}Total Requests: {total}")
@@ -385,15 +385,15 @@ async def main():
     os.system('cls' if os.name == 'nt' else 'clear')
     print(f"""
 {Fore.MAGENTA}
-██╗  ██╗██╗████████╗███████╗██╗   ██╗███╗   ██╗███████╗
-██║ ██╔╝██║╚══██╔══╝██╔════╝██║   ██║████╗  ██║██╔════╝
-█████╔╝ ██║   ██║   ███████╗██║   ██║██╔██╗ ██║█████╗  
-██╔═██╗ ██║   ██║   ╚════██║██║   ██║██║╚██╗██║██╔══╝  
-██║  ██╗██║   ██║   ███████║╚██████╔╝██║ ╚████║███████╗
-╚═╝  ╚═╝╚═╝   ╚═╝   ╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+██╗      █████╗ ██████╗ ██╗   ██╗███████╗ ██████╗ ██╗  ██╗
+██║     ██╔══██╗██╔══██╗╚██╗ ██╔╝██╔════╝██╔═══██╗╚██╗██╔╝
+██║     ███████║██║  ██║ ╚████╔╝ █████╗  ██║   ██║ ╚███╔╝ 
+██║     ██╔══██║██║  ██║  ╚██╔╝  ██╔══╝  ██║   ██║ ██╔██╗ 
+███████╗██║  ██║██████╔╝   ██║   ██║     ╚██████╔╝██╔╝ ██╗
+╚══════╝╚═╝  ╚═╝╚═════╝    ╚═╝   ╚═╝      ╚═════╝ ╚═╝  ╚═╝
                                                        
-         Kitsune v1.0 - Firepower Edition
-{Fore.LIGHTCYAN_EX}  Developed By: ALTAIR
+         LadyFox v1.0 - Firepower Edition
+{Fore.LIGHTCYAN_EX}  Developed By: LYNSS
 {Style.RESET_ALL}
     """)
     print(f"{Fore.LIGHTGREEN_EX}Choose Layer: ")
