@@ -1,6 +1,6 @@
-# 🦊 KITSUNE v1.0 - Firepower Edition
+# 🦊 LADYFOX v1.0 - Firepower Edition
 
-**KITSUNE** is a high-performance, modular Layer 4 and Layer 7 **DDoS testing tool** developed for educational and research purposes. 
+**LADYFOX** is a high-performance, modular Layer 4 and Layer 7 **DDoS testing tool** developed for educational and research purposes. 
 
 ---
 
