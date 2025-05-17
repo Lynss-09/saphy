@@ -33,5 +33,7 @@
 - Linux or Termux recommended (Windows partially supported)
 
 ```bash
+git clone https://github.com/Lynss-09/ladyfox
+cd ladyfox
 pip install -r requirements.txt
 python3 main.py
