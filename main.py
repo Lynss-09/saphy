@@ -77,7 +77,27 @@ def scrape_proxies():
         "https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/socks5.txt",
         "https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/http.txt",
         "https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/socks4.txt",
-        "https://raw.githubusercontent.com/prxchk/proxy-list/main/http.txt"
+        "https://raw.githubusercontent.com/prxchk/proxy-list/main/http.txt",
+        "https://raw.githubusercontent.com/casals-ar/proxy-list/main/http.txt",
+        "https://raw.githubusercontent.com/casals-ar/proxy-list/main/socks5.txt",
+        "https://raw.githubusercontent.com/casals-ar/proxy-list/main/socks4.txt",
+        "https://raw.githubusercontent.com/zevtyardt/proxy-list/main/http.txt",
+        "https://raw.githubusercontent.com/zevtyardt/proxy-list/main/socks4.txt",
+        "https://raw.githubusercontent.com/zevtyardt/proxy-list/main/socks5.txt",
+        "https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/https.txt",
+        "https://raw.githubusercontent.com/malbink/Free-Proxy-List/master/proxies.txt",
+        "https://raw.githubusercontent.com/aniyun009/free-proxy-list/main/proxy-list.txt",
+        "https://raw.githubusercontent.com/andybalholm/aaa-proxy-list/main/list.txt",
+        "https://raw.githubusercontent.com/aslisk/proxyhttps/main/https.txt",
+        "https://raw.githubusercontent.com/rdavydov/proxy-list/main/proxies/https.txt",
+        "https://raw.githubusercontent.com/zloi-user/hideip.me/main/proxies.txt",
+        "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/https.txt",
+        "https://raw.githubusercontent.com/hanwaytech/free-proxy-list/main/proxy-list.txt",
+        "https://raw.githubusercontent.com/Bardiafa/Proxy-Leecher/main/output.txt",
+        "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies_anonymous/https.txt",
+        "https://raw.githubusercontent.com/hendrikbgr/Free-Proxy-Repo/master/proxy_list_anonymous.txt",
+        "https://raw.githubusercontent.com/Jiejiejiayou/IPTVProxy/main/proxy/http.txt",
+        "https://raw.githubusercontent.com/Jiejiejiayou/IPTVProxy/main/proxy/socks5.txt"
     ]
     proxies = set()
     print(f"{Fore.YELLOW}[!] Scraping fresh proxies...")
