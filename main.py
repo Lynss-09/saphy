@@ -1,4 +1,4 @@
-# Kitsune v1.0 - Firepower Edition
+# LadyFox v1.0 - Firepower Edition
 # Developed By: LYNSS
 import threading
 import asyncio
