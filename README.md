@@ -1,6 +1,6 @@
-# 🦊 LADYFOX v1.0 - Firepower Edition
+#  Saphy v2.0 - Firepower Edition
 
-**LADYFOX** is a high-performance, modular Layer 4 and Layer 7 **DDoS testing tool** developed for educational and research purposes. 
+**Saphy** is a high-performance, modular Layer 4 and Layer 7 **DDoS testing tool** developed for educational and research purposes. 
 
 ---
 
@@ -33,7 +33,7 @@
 - Linux or Termux recommended (Windows partially supported)
 
 ```bash
-git clone https://github.com/Lynss-09/ladyfox
-cd ladyfox
+git clone https://github.com/Lynss-09/saphy
+cd saphy
 pip install -r requirements.txt
 python3 main.py
