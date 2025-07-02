@@ -493,7 +493,7 @@ async def main():
             selected_type = "socks5"
 
         print(f"{Fore.LIGHTCYAN_EX}Proxies being used:")
-        for proxy in proxy_list[:50]:  
+        for proxy in proxy_list[:100]:  
             ip = proxy.split(":")[0]
             location = geo_ip(ip)
             print(f"{proxy} -> {location}")
